@@ -1,31 +1,100 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id         Int    @id @default(autoincrement())
+  keycloakId String @unique
+
+  practice   Practice @relation(fields: [practiceId], references: [id])
+  practiceId Int
+
+  position Position
+
+  // Intégration possible directement avec Keycloak ?
+  // https://github.com/thomasdarimont/keycloak-avatar-minio-extension
+  avatar Bytes
+
+  Article Article[]
+  Comment Comment[]
+  Like    Like[]
 
   @@map("Users")
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Practice {
+  id   Int    @id @default(autoincrement())
+  name String
 
-  @@map("Posts")
+  User    User[]
+  Article Article[]
+
+  @@map("Practices")
+}
+
+model Article {
+  id Int @id @default(autoincrement())
+
+  practice   Practice @relation(fields: [practiceId], references: [id])
+  practiceId Int
+
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  title       String
+  content     String
+  publishDate DateTime
+
+  Image   Image[]
+  Comment Comment[]
+  Like    Like[]
+
+  @@map("Articles")
+}
+
+model Image {
+  id Int @id @default(autoincrement())
+
+  article   Article @relation(fields: [articleId], references: [id])
+  articleId Int
+
+  src String
+
+  @@map("Images")
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+
+  article   Article @relation(fields: [articleId], references: [id])
+  articleId Int
+
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  content String
+
+  @@map("Comments")
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+
+  article   Article @relation(fields: [articleId], references: [id])
+  articleId Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@map("Likes")
+}
+
+enum Position {
+  Collaborator
+  Candidate
 }
