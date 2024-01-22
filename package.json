@@ -1,8 +1,7 @@
 {
   "scripts": {
     "start": "ts-node main.ts",
-    "prisma": "prisma",
-    "migrate": "prisma migrate dev --name"
+    "prisma": "prisma"
   },
   "dependencies": {
     "@prisma/client": "5.8.1",
