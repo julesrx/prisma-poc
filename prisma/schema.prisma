@@ -1,3 +1,5 @@
+// see squad-docs.git/database.dbml
+
 generator client {
   provider = "prisma-client-js"
 }

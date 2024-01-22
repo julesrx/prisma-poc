@@ -1,12 +1,13 @@
 import fastify from 'fastify';
 
-import { getUsers, getUsersRaw } from './src/sql';
+import { createPractice, createUser, getUsers } from './src/sql';
 
 const app = fastify({ logger: true });
 
-app.get('/users/orm', async () => await getUsers());
+app.post('/practices', async () => await createPractice());
 
-app.get('/users/raw', async () => getUsersRaw());
+app.get('/users', async () => await getUsers());
+app.post('/users', async () => await createUser());
 
 const main = async () => {
   try {
