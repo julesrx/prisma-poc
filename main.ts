@@ -1,11 +1,12 @@
 import fastify from 'fastify';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { getUsers, getUsersRaw } from './src/sql';
 
 const app = fastify({ logger: true });
 
-app.get('/users', async () => await prisma.user.findMany());
+app.get('/users/orm', async () => await getUsers());
+
+app.get('/users/raw', async () => getUsersRaw());
 
 const main = async () => {
   try {
