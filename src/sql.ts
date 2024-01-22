@@ -5,26 +5,29 @@ const client = new PrismaClient();
 
 export const getUsers = async () => {
   // OR: client.$queryRaw<User[]>`SELECT * from "Users"`;
-  return await client.user.findMany();
+  return await client.user.findMany({
+    select: { id: true, keycloakId: true, practice: true, position: true }
+  });
 };
 
 export const createPractice = async () => {
-  return await client.practice.create({
+  const practice = await client.practice.create({
     data: {
       name: faker.lorem.word()
     }
   });
+
+  return practice.id;
 };
 
 export const createUser = async () => {
   const avatar = await fetch(faker.image.avatarGitHub())
-    .then((r) => r.blob())
-    .then((b) => b.arrayBuffer())
+    .then((r) => r.arrayBuffer())
     .then((a) => Buffer.from(a));
 
   const practiceIds = await client.practice.findMany({ select: { id: true } });
 
-  return await client.user.create({
+  const user = await client.user.create({
     data: {
       avatar: avatar,
       keycloakId: crypto.randomUUID(),
@@ -32,4 +35,6 @@ export const createUser = async () => {
       practiceId: faker.helpers.arrayElement(practiceIds).id
     }
   });
+
+  return user.id;
 };
