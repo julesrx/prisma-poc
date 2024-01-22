@@ -80,6 +80,7 @@ model Comment {
   authorId Int
 
   content String
+  date    DateTime
 
   @@map("Comments")
 }
