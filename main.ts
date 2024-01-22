@@ -9,7 +9,7 @@ import {
   getPractices,
   getUserAvatar,
   getUsers
-} from './src/sql';
+} from './sql';
 
 const app = fastify({ logger: true });
 app.register(sensible);
