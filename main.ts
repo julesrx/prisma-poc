@@ -1,11 +1,20 @@
 import fastify from 'fastify';
 import sensible from '@fastify/sensible';
 
-import { createPractice, createUser, getUserAvatar, getUsers } from './src/sql';
+import {
+  createArticles,
+  createPractice,
+  createUser,
+  getArticles,
+  getPractices,
+  getUserAvatar,
+  getUsers
+} from './src/sql';
 
 const app = fastify({ logger: true });
 app.register(sensible);
 
+app.get('/practices', async () => await getPractices());
 app.post('/practices', async () => await createPractice());
 
 app.get('/users', async () => await getUsers());
@@ -19,6 +28,20 @@ app.get('/users/:userId/avatar', async (req, rep) => {
 
   rep.type('image/png');
   rep.send(avatar);
+});
+
+app.post('/articles', async (req, rep) => {
+  const { practiceId } = req.query as { practiceId: string };
+  if (!practiceId || !+practiceId) return rep.badRequest();
+
+  return await createArticles(+practiceId);
+});
+
+app.get('/articles', async (req, rep) => {
+  const { practiceId } = req.query as { practiceId: string };
+  if (!practiceId || !+practiceId) return rep.notFound();
+
+  return await getArticles(+practiceId, 0);
 });
 
 const main = async () => {
