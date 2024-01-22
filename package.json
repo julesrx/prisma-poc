@@ -1,5 +1,12 @@
 {
+  "scripts": {
+    "start": "ts-node main.ts",
+    "prisma": "prisma",
+    "migrate": "prisma migrate dev --name"
+  },
   "dependencies": {
+    "@prisma/client": "5.8.1",
+    "fastify": "^4.25.2",
     "prisma": "^5.8.1"
   },
   "devDependencies": {
