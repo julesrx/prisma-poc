@@ -10,6 +10,17 @@ export const getUsers = async () => {
   });
 };
 
+export const getUserAvatar = async (userId: number) => {
+  const user = await client.user.findUnique({
+    where: { id: userId },
+    select: { avatar: true }
+  });
+  
+  if (!user) return null;
+
+  return user.avatar;
+};
+
 export const createPractice = async () => {
   const practice = await client.practice.create({
     data: {
